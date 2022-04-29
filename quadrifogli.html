@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quadrifogli</title>
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+	<meta content="utf-8" http-equiv="encoding">
+    <script  type="text/javascript" src="lib/d3.v6.min.js"></script>
+</head>
+<body>
+  <svg width="100%" height="400"></svg>
+  <script>
+
+    function drawleaf(degree, x, y){
+
+      console.log(degree);
+      var svg = d3.select("svg");
+
+      var data = [{x: 98, y: 109.5}, {x: 125, y: 110}, {x: 118, y: 84}]
+      var lineFunc = d3.line()
+                  .x(function(d) { return d.x })
+                  .y(function(d) { return d.y })
+
+      svg.append("circle")
+      .attr('cx', 100)
+      .attr('cy', 100)
+      .attr('r', 10)
+      .attr('fill', 'green')
+      .attr("transform", "rotate("+degree+" 125 110), translate("+x+","+y+")");
+      svg.append('circle')
+      .attr('cx', 110)
+      .attr('cy', 90)
+      .attr('r', 10)
+      .attr('fill', 'green')
+      .attr("transform", "rotate("+degree+" 125 110), translate("+x+","+y+")");
+      svg.append('path')
+      .attr('d', lineFunc(data))
+      .attr('stroke', 'green')
+      .attr('fill', 'green')
+      .attr("transform", "rotate("+degree+" 125 110), translate("+x+","+y+")");
+    }
+
+    function drawclover(x,y){
+      drawleaf(0, y, x)
+      drawleaf(90, x, -y)
+      drawleaf(180, -y, -x)
+      drawleaf(270, -x, y)
+    }
+
+    function drawclovers(){
+      j=0
+      h=100
+      for (i=0; i<5; i++){
+        drawclover(0,j)
+        drawclover(100,h)
+        j+=200
+        h+=200
+      }
+
+    }
+
+    drawclovers();
+  </script>
+
+</body>
+</html>
