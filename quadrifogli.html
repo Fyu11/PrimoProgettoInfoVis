@@ -10,50 +10,44 @@
   <svg width="100%" height="400"></svg>
   <script>
 
+    var NUM_CLOVERS = 10;
+    var ANGLES = [0, 90, 180, 270];
+
     function drawleaf(degree, x, y){
 
-      console.log(degree);
       var svg = d3.select("svg");
+      var startx = 266;
+      var starty = 221;
 
-      var data = [{x: 98, y: 109.5}, {x: 125, y: 110}, {x: 118, y: 84}]
-      var lineFunc = d3.line()
-                  .x(function(d) { return d.x })
-                  .y(function(d) { return d.y })
-
-      svg.append("circle")
-      .attr('cx', 100)
-      .attr('cy', 100)
-      .attr('r', 10)
-      .attr('fill', 'green')
-      .attr("transform", "rotate("+degree+" 125 110), translate("+x+","+y+")");
-      svg.append('circle')
-      .attr('cx', 110)
-      .attr('cy', 90)
-      .attr('r', 10)
-      .attr('fill', 'green')
-      .attr("transform", "rotate("+degree+" 125 110), translate("+x+","+y+")");
-      svg.append('path')
-      .attr('d', lineFunc(data))
+      svg.append("path")
+      .attr('d', 'M266,221c-10.49,-20.79,-56.08,-73.11,-50.09,-32.06c1.98,9.99,-17.83,1.25,-14.03,16.03c0.8,20.79,51.57,16.78,64.12,16.03Z')
       .attr('stroke', 'green')
       .attr('fill', 'green')
-      .attr("transform", "rotate("+degree+" 125 110), translate("+x+","+y+")");
+      .attr("transform", "translate("+x+","+y+"), rotate("+degree+" "+startx+" "+starty+")");
     }
 
     function drawclover(x,y){
-      drawleaf(0, y, x)
-      drawleaf(90, x, -y)
-      drawleaf(180, -y, -x)
-      drawleaf(270, -x, y)
+
+      //va passato alla singola funzione per disegnare la foglia il valore della
+      //variabile associata per usarla per determinarne la grandezza
+
+      for (let i in ANGLES){
+        drawleaf(ANGLES[i],x,y)
+      }
     }
 
     function drawclovers(){
-      j=0
-      h=100
-      for (i=0; i<5; i++){
-        drawclover(0,j)
-        drawclover(100,h)
-        j+=200
-        h+=200
+
+      //vanno estratti i dati dal json e salvati in un array di array da passare
+      //alla funzione drawclover
+
+      j=-100
+      h=25
+      for (i=0; i<NUM_CLOVERS/2; i++){
+        drawclover(j,-100)
+        drawclover(h,0)
+        j+=250
+        h+=250
       }
 
     }
