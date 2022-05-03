@@ -5,6 +5,8 @@
 	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 	<meta content="utf-8" http-equiv="encoding">
     <script  type="text/javascript" src="lib/d3.v6.min.js"></script>
+    <script src="http://d3js.org/d3.v5.min.js"></script>
+    <script src="https://d3js.org/d3-array.v2.min.js"></script>
 </head>
 <body>
   <svg width="100%" height="400"></svg>
@@ -12,8 +14,19 @@
 
     var NUM_CLOVERS = 10;
     var ANGLES = [0, 90, 180, 270];
+    var casei = [];
 
-    function drawleaf(degree, x, y){
+    async function extractData(i){
+      return await d3.json("file.json")
+                     .then(async function extract(data){
+                              return data[i];
+                           });
+    }
+
+    function drawleaf(degree, x, y, val_scale){
+
+      console.log(val_scale)
+      //bisogna utilizzare questo valore per disegnare le foglie in modo proporzionale allo stesso
 
       var svg = d3.select("svg");
       var startx = 266;
@@ -26,33 +39,30 @@
       .attr("transform", "translate("+x+","+y+"), rotate("+degree+" "+startx+" "+starty+")");
     }
 
-    function drawclover(x,y){
+    function drawclover(x,y,obj){
 
-      //va passato alla singola funzione per disegnare la foglia il valore della
-      //variabile associata per usarla per determinarne la grandezza
+      var temp = d3.values(obj)
+      var array = d3.values(temp[0])
+      var j=0;
 
       for (let i in ANGLES){
-        drawleaf(ANGLES[i],x,y)
+        drawleaf(ANGLES[i],x,y,array[j]);
+        j++;
       }
     }
 
-    function drawclovers(){
+    async function drawclovers(){
 
-      //vanno estratti i dati dal json e salvati in un array di array da passare
-      //alla funzione drawclover
-
-      j=-100
-      h=25
-      for (i=0; i<NUM_CLOVERS/2; i++){
-        drawclover(j,-100)
-        drawclover(h,0)
-        j+=250
-        h+=250
+      width=-200
+      for (i=0; i<NUM_CLOVERS; i++){
+        let casei = await extractData(i);
+        drawclover(width,-100,casei)
+        width+=190
       }
-
     }
 
     drawclovers();
+
   </script>
 
 </body>
