@@ -4,91 +4,30 @@
     <title>Quadrifogli</title>
 	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 	<meta content="utf-8" http-equiv="encoding">
-    <script  type="text/javascript" src="lib/d3.v6.min.js"></script>
-    <script src="http://d3js.org/d3.v5.min.js"></script>
-    <script src="https://d3js.org/d3-array.v2.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://d3js.org/d3-array.v3.min.js"></script>
+    <script src="https://d3js.org/d3-selection.v3.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/d3-color@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-dispatch@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-ease@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-interpolate@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-selection@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-timer@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-transition@3"></script>
+
 </head>
 <body>
-  <svg width="100%" height="850">
-    <defs>
-      <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" style="stop-color:rgb(194,223,255);stop-opacity:1" />
-        <stop offset="100%" style="stop-color:rgb(195,253,184);stop-opacity:1" />
-      </linearGradient>
-    </defs>
-    <defs>
-      <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" style="stop-color:rgb(0,100,0);stop-opacity:1" />
-        <stop offset="100%" style="stop-color:rgb(18,173,43);stop-opacity:1" />
-      </linearGradient>
-    </defs>
-    <rect width="100%" height="100%" fill="url(#grad1)" />
+  <svg width="100%" height="870">
+      <defs>
+        <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:rgb(0,100,0);stop-opacity:1" />
+          <stop offset="100%" style="stop-color:rgb(18,173,43);stop-opacity:1" />
+        </linearGradient>
+      </defs>
   </svg>
-  <script>
-
-    var NUM_CLOVERS = 10;
-    var ANGLES = [0, 90, 180, 270];
-    var casei = [];
-
-    async function extractData(i){
-      return await d3.json("file.json")
-                     .then(async function extract(data){
-                              return data[i];
-                           });
-    }
-
-    function drawleaf(degree, x, y, val_scale){
-
-      console.log(val_scale)
-      //bisogna utilizzare questo valore per disegnare le foglie in modo proporzionale allo stesso
-      var myScale = d3.scaleLinear();
-      myScale.domain([0, 10]);
-      myScale.range([0, 1]);
-
-      var svg = d3.select("svg");
-      var startx = 266;
-      var starty = 221;
-
-      svg.append("line")
-         .attr('x1', startx)
-         .attr('y1', starty)
-         .attr('x2', startx)
-         .attr('y2', starty+300)
-         .attr('stroke', 'green')
-         .attr("transform", "translate("+x+","+y+")");
-
-      svg.append("path")
-         .attr('d', 'M266,221c-10.49,-20.79,-56.08,-73.11,-50.09,-32.06c1.98,9.99,-17.83,1.25,-14.03,16.03c0.8,20.79,51.57,16.78,64.12,16.03Z')
-         .attr('stroke', 'green')
-         .attr('fill', 'url(#grad2)')
-         .attr("transform", "translate("+x+","+y+"), rotate("+degree+" "+startx+" "+starty+")");
-    }
-
-    function drawclover(x,y,obj){
-
-      var temp = d3.values(obj)
-      var array = d3.values(temp[0])
-      var j=0;
-
-      for (let i in ANGLES){
-        drawleaf(ANGLES[i],x,y,array[j]);
-        j++;
-      }
-    }
-
-    async function drawclovers(){
-
-      width=-200
-      for (i=0; i<NUM_CLOVERS; i++){
-        let casei = await extractData(i);
-        drawclover(width,100,casei)
-        width+=190
-      }
-    }
-
-    drawclovers();
-
-  </script>
-
+  <script src="js/chart.js"></script>
 </body>
 </html>

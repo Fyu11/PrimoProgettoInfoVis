@@ -1,0 +1,12 @@
+body {
+  background: linear-gradient(#6dbcff, #7fc768);
+}
+
+path {
+    fill: url(#grad2);
+    stroke: green;
+}
+
+line {
+    stroke: darkgreen;
+}
