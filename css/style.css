@@ -1,12 +1,33 @@
 body {
-  background: linear-gradient(#6dbcff, #7fc768);
-}
-
-path {
-    fill: url(#grad2);
-    stroke: green;
+  background: linear-gradient(#22c1c3, #fdbb2d);
 }
 
 line {
-    stroke: darkgreen;
+  stroke: darkgreen;
+}
+
+.titolo{
+  text-align: center;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  font-family: Segoe Script, Segoe Script, sans-serif;
+  font-size: 60px;
+  fill: darkgreen;
+}
+
+.clover{
+  text-align: center;
+  font-style: normal;
+  font-family: Segoe Print, Segoe Print, sans-serif;
+  font-size: 30px;
+  fill: darkgreen;
+}
+
+.testo{
+  text-align: center;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  font-family: Segoe Print, Segoe Print, sans-serif;
+  font-size: 30px;
+  fill: crimson;
 }
