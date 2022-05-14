@@ -1,82 +1,72 @@
 [
     {
-    "case1": {
-      "var1": 0,
-      "var2": 0,
-      "var3": 1,
-      "var4": 1
-      }
+      "paese": "Australia",
+      "Health": 10,
+      "Jobs": 1,
+      "Environment": 3,
+      "Education": 1
     },
     {
-    "case2": {
-      "var1": 10,
-      "var2": 9,
-      "var3": 8,
-      "var4": 7
-      }
+      "paese": "Brasile",
+      "Health": 1,
+      "Jobs": 10,
+      "Environment": 5,
+      "Education": 3
     },
     {
-    "case3": {
-      "var1": 6,
-      "var2": 5,
-      "var3": 4,
-      "var4": 3
-      }
+      "paese": "Canada",
+      "Health": 9,
+      "Jobs": 5,
+      "Environment": 8,
+      "Education": 7
     },
     {
-    "case4": {
-      "var1": 2,
-      "var2": 2,
-      "var3": 2,
-      "var4": 2
-      }
+     "paese": "Cile",
+      "Health": 2,
+      "Jobs": 6,
+      "Environment": 1,
+      "Education": 5
     },
     {
-    "case5": {
-      "var1": 10,
-      "var2": 5,
-      "var3": 8,
-      "var4": 1
-      }
+      "paese": "Finlandia",
+      "Health": 8,
+      "Jobs": 8,
+      "Environment": 9,
+      "Education": 8
     },
     {
-    "case6": {
-      "var1": 10,
-      "var2": 5,
-      "var3": 8,
-      "var4": 1
-      }
+      "paese": "Grecia",
+      "Health": 3,
+      "Jobs": 3,
+      "Environment": 4,
+      "Education": 7
     },
     {
-    "case7": {
-      "var1": 10,
-      "var2": 5,
-      "var3": 8,
-      "var4": 1
-      }
+      "paese": "Islanda",
+      "Health": 7,
+      "Jobs": 9,
+      "Environment": 9,
+      "Education": 7
     },
     {
-    "case8": {
-      "var1": 10,
-      "var2": 5,
-      "var3": 8,
-      "var4": 1
-      }
+      "paese": "Italia",
+      "Health": 4,
+      "Jobs": 6,
+      "Environment": 5,
+      "Education": 5
     },
     {
-    "case9": {
-      "var1": 10,
-      "var2": 5,
-      "var3": 8,
-      "var4": 1
-      }
+      "paese": "Messico",
+      "Health": 6,
+      "Jobs": 6,
+      "Environment": 4,
+      "Education": 2
     },
     {
-    "case10": {
-      "var1": 10,
-      "var2": 5,
-      "var3": 8,
-      "var4": 1
-      }
+      "paese": "Slovenia",
+      "Health": 5,
+      "Jobs": 7,
+      "Environment": 6,
+      "Education": 7
     }
 ]

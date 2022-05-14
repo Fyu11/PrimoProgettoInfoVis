@@ -1,20 +1,21 @@
 var NUM_CLOVERS = 10;
 var ANGLES = [45, 135, 225, 315];
-
-//coordinate centro primo quadrifoglio
+var parametri = ["Health", "Jobs", "Environment", "Education"];
+var ord=0;
+var distance = 170;
+var start=100;
 var startx = 150;
 var starty = 80;
-
-var ord=0;
-
-var stemLenght = 800;
-
-var svg = d3.select("svg");
+var stemLenght = 600;
 
 //Assegna alla foglia una dimensione proporzionale al valore che rappresenta
 var dimScale = d3.scaleLinear();
     dimScale.domain([0, 10]);
     dimScale.range([0, 100]);
+
+var fattore = d3.scaleLinear();
+    fattore.domain([1, 10]);
+    fattore.range([1, 0]);
 
 //Centra la foglia nel punto (startx,starty) in base al valore che rappresenta
 var originXScale = d3.scaleLinear();
@@ -29,134 +30,129 @@ var originYScale = d3.scaleLinear();
 //Assegna un'altezza al quadrifoglio proporzionale alla somma delle sue 4 variabili
 var totalPointScale = d3.scaleLinear();
     totalPointScale.domain([0, 40]);
-    totalPointScale.range([500, 150]);
+    totalPointScale.range([500, 100]);
+
+var svg = d3.select("svg");
+
+
 
 svg.append("text")
    .attr("class", "titolo")
    .attr("x", "50%")
-   .attr("y","15%")
+   .attr("y","10%")
    .text("Qualità della vita");
 
-//estrae il singolo oggetto (paese) alla volta
-async function extractData(i){
-  return await d3.json("data/dataset.json")
-                 .then(async function extract(data){
-                          return data[i];
-                       });
+
+
+function scomponi(d){
+  var singleCase = Object.values(d)
+  var arrayTemp = Object.values(singleCase)
+  arrayTemp.shift();
+  var totalPoint = d3.sum(arrayTemp);
+  return totalPointScale(totalPoint);
 }
 
 
-function drawclovers(elementi){
 
- //variabile per traslare sempre più a destra il prossimo quadrifoglio
- //alla fine del disegno di un quadrifoglio viene aumentata
-  x=0
+function drawclovers(data){
 
-  var clovers = svg.selectAll(".clover");
-  clovers.remove();
+  var leafs = svg.selectAll(".leaf").data(data);
+  leafs.exit().remove();
+  var stems = svg.selectAll(".stem").data(data);
+  stems.exit().remove();
+  var paesi = svg.selectAll(".paese").data(data);
+  paesi.exit().remove();
 
-  var testo = svg.selectAll(".testo");
-  testo.remove();
-
-  for (i=0; i<NUM_CLOVERS; i++){
-
-    var singleCase = Object.values(elementi)[i]
-    var paese = Object.values(singleCase)[0]
-    var arrayTemp = Object.values(singleCase)
-    arrayTemp.shift();
-
-    var totalPoint = d3.sum(arrayTemp);
-
-    //disegno stelo
-    svg.append("line")
-         .attr("class", "clover")
-         .attr('x1', startx)
-         .attr('y1', starty)
-         .attr('x2', startx)
-         .attr('y2', starty+stemLenght-totalPointScale(totalPoint))
-         .attr("transform", "translate("+x+", "+totalPointScale(totalPoint)+")");
-
-    //disegno scritta Paese
-    svg.append("text")
-        .attr("class", "clover")
-        .attr("x", -(stemLenght/2))
-        .attr("y", startx)
-        .attr("transform", "translate("+x+","+stemLenght/2+"), rotate(-90)")
-        .text(paese);
-
-    for (let j in ANGLES){
-
-        var val_scale = Object.values(singleCase)[parseInt(j)+1];
-        var degree = ANGLES[j];
-
-        //disegno foglie
-        svg.append("image")
-            .attr("class", "clover")
-            .attr('x', function(){return originXScale(val_scale)})
-            .attr('y', function(){return originYScale(val_scale)})
-            .attr('width', function(){ return dimScale(val_scale)})
-            .attr('height', function(){ return dimScale(val_scale)})
-            .attr('href', 'data/leaf.png')
-            .attr("transform", "translate("+x+","+totalPointScale(totalPoint)+"), rotate("+degree+" "+startx+" "+starty+")")
-            .on("mousedown", function(){
-                  ord = parseInt(j)+1
-                  redraw(ord, elementi);
-            });
-
-    }
-
-    if (ord != 0){
-      //Disegno scritta valori parametro (1 per ogni quadrifoglio)
-      var valore = Object.values(singleCase)[ord];
-      svg.append("text")
-         .attr("class", "testo")
-         .attr('x', startx)
-         .attr('y', starty)
-         .attr("transform", "translate("+x+","+totalPointScale(totalPoint)+")")
-         .text(valore);
-   }
-
-    x+=180
+  //disegno foglie
+  for(i=0; i<4; i++){
+    leafs.enter().append("image")
+        .attr("class", "leaf")
+        .attr("id", "leaf"+i)
+        .attr('x', function(d){return originXScale(d[parametri[i]])})
+        .attr('y', function(d){return originYScale(d[parametri[i]])})
+        .attr('width', function(d){ return dimScale(d[parametri[i]])})
+        .attr('height', function(d){ return dimScale(d[parametri[i]])})
+        .attr('href', 'data/leaf.png')
+        .attr("transform", function(d, j) {
+                    var x = start+distance*(j-1);
+                    var y = scomponi(d);
+                    return "translate("+x+", "+y+"), rotate("+ANGLES[i]+" "+startx+" "+starty+")"
+                  })
+        .on("click", function(d){
+                    var leafid = d.path[0].id;
+                    var ord = parseInt(leafid.substr(leafid.length - 1));
+                    change(ord, data)})
   }
 
-  if (ord != 0){
-    //Disegno scritta parametro (sotto il titolo)
-    svg.append("text")
-       .attr("class", "testo")
-       .attr("x", "50%")
-       .attr("y", "20%")
-       .text(Object.keys(singleCase)[ord]);
+  //disegno stelo
+  stems.enter().append("line")
+       .attr("class", "stem")
+       .attr('x1', startx)
+       .attr('y1', starty)
+       .attr('x2', startx)
+       .attr('y2', function(d){return starty+stemLenght-scomponi(d)})
+       .attr("transform", function(d, j) {
+                   var x = start+distance*(j-1);
+                   var y = scomponi(d);
+                   return "translate("+x+", "+y+")"
+                 });
 
-   //Disegno freccia per tornare al vecchio ordinamento
-   svg.append("image")
-       .attr("class", "testo")
-       .attr('x', '65%')
-       .attr('y', '13%')
-       .attr('width', 50)
-       .attr('height', 50)
-       .attr('href', 'data/freccia.png')
-       .on("mousedown", function(){
-          ord=0;
-          init()
-       });
+   //scritta paesi
+   paesi.enter().append("text")
+       .attr("class", "paese")
+       .attr("x", -(stemLenght/2)-80)
+       .attr("y", startx)
+       .attr("transform", function(d, j) {
+                   var x = start+distance*(j-1);
+                   return "translate("+x+", "+stemLenght/2+"), rotate(-90)"
+                 })
+       .text(function(d){return d.paese});
+
+}
+
+
+
+function change(ord, data){
+
+  var newData = data.sort(function(a, b){
+            return Object.values(a)[ord+1] - Object.values(b)[ord+1]});
+
+
+
+  d3.selectAll(".stem").data(newData).transition().duration(500)
+    .attr('y2', function(d){return starty+stemLenght-scomponi(d)})
+    .attr("transform", function(d, j) {
+                var x = start+distance*(j-1);
+                var y = scomponi(d);
+                return "translate("+x+", "+y+")"
+              });
+
+  for(let i in parametri){
+    d3.selectAll("#leaf"+i).data(newData).transition().duration(500)
+      .attr('x', function(d){
+        return originXScale(d[parametri[i]])})
+      .attr('y', function(d){return originYScale(d[parametri[i]])})
+      .attr('width', function(d){ return dimScale(d[parametri[i]])})
+      .attr('height', function(d){ return dimScale(d[parametri[i]])})
+      .attr("transform", function(d, j) {
+                  var x = start+distance*(j-1);
+                  var y = scomponi(d);
+                  return "translate("+x+", "+y+"), rotate("+ANGLES[i]+" "+startx+" "+starty+")"
+                });
   }
+
+  d3.selectAll(".paese").data(newData).transition().duration(500)
+    .attr("transform", function(d, j) {
+                var x = start+distance*(j-1);
+                return "translate("+x+", "+stemLenght/2+"), rotate(-90)"
+              })
+    .text(function(d){return d.paese});
+
 }
 
 
-function redraw(ord, elementi){
-  var sortedElem = elementi.sort(function(a, b){
-    return Object.values(a)[ord] - Object.values(b)[ord]});
-  drawclovers(sortedElem);
-}
 
-
-async function init(){
-  var elementi=[];
-  for (i=0; i<NUM_CLOVERS; i++){
-    var case_i = await extractData(i);
-    elementi.push(case_i);
-  }
-  drawclovers(elementi);
-}
-
-init()
+d3.json("data/dataset.json")
+  .then(function (data){
+            drawclovers(data);
+         });
