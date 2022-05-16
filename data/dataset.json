@@ -1,15 +1,15 @@
 [
     {
       "paese": "Australia",
-      "Health": 10,
-      "Jobs": 1,
-      "Environment": 3,
-      "Education": 1
+      "Health": 9,
+      "Jobs": 6,
+      "Environment": 8,
+      "Education": 7
     },
     {
       "paese": "Brasile",
-      "Health": 1,
-      "Jobs": 10,
+      "Health": 6,
+      "Jobs": 4,
       "Environment": 5,
       "Education": 3
     },
@@ -29,42 +29,42 @@
     },
     {
       "paese": "Finlandia",
-      "Health": 8,
+      "Health": 7,
       "Jobs": 8,
       "Environment": 9,
       "Education": 8
     },
     {
       "paese": "Grecia",
-      "Health": 3,
+      "Health": 8,
       "Jobs": 3,
       "Environment": 4,
       "Education": 7
     },
     {
       "paese": "Islanda",
-      "Health": 7,
+      "Health": 8,
       "Jobs": 9,
       "Environment": 9,
       "Education": 7
     },
     {
       "paese": "Italia",
-      "Health": 4,
+      "Health": 8,
       "Jobs": 6,
       "Environment": 5,
       "Education": 5
     },
     {
       "paese": "Messico",
-      "Health": 6,
+      "Health": 5,
       "Jobs": 6,
       "Environment": 4,
       "Education": 2
     },
     {
       "paese": "Slovenia",
-      "Health": 5,
+      "Health": 7,
       "Jobs": 7,
       "Environment": 6,
       "Education": 7

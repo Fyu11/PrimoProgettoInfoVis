@@ -2,8 +2,8 @@ var NUM_CLOVERS = 10;
 var ANGLES = [45, 135, 225, 315];
 var parametri = ["Health", "Jobs", "Environment", "Education"];
 var ord=0;
-var distance = 170;
-var start=100;
+var distance = 152;
+var start=75;
 var startx = 150;
 var starty = 80;
 var stemLenght = 600;
@@ -81,7 +81,7 @@ function drawclovers(data){
         .on("click", function(d){
                     var leafid = d.path[0].id;
                     var ord = parseInt(leafid.substr(leafid.length - 1));
-                    change(ord, data)})
+                    change(ord, data);})
   }
 
   //disegno stelo
@@ -100,14 +100,13 @@ function drawclovers(data){
    //scritta paesi
    paesi.enter().append("text")
        .attr("class", "paese")
-       .attr("x", -(stemLenght/2)-80)
+       .attr("x", -(stemLenght)-80)
        .attr("y", startx)
        .attr("transform", function(d, j) {
                    var x = start+distance*(j-1);
-                   return "translate("+x+", "+stemLenght/2+"), rotate(-90)"
+                   return "translate("+x+"), rotate(-90)"
                  })
        .text(function(d){return d.paese});
-
 }
 
 
@@ -116,8 +115,6 @@ function change(ord, data){
 
   var newData = data.sort(function(a, b){
             return Object.values(a)[ord+1] - Object.values(b)[ord+1]});
-
-
 
   d3.selectAll(".stem").data(newData).transition().duration(500)
     .attr('y2', function(d){return starty+stemLenght-scomponi(d)})
@@ -128,28 +125,54 @@ function change(ord, data){
               });
 
   for(let i in parametri){
-    d3.selectAll("#leaf"+i).data(newData).transition().duration(500)
-      .attr('x', function(d){
-        return originXScale(d[parametri[i]])})
-      .attr('y', function(d){return originYScale(d[parametri[i]])})
-      .attr('width', function(d){ return dimScale(d[parametri[i]])})
-      .attr('height', function(d){ return dimScale(d[parametri[i]])})
-      .attr("transform", function(d, j) {
-                  var x = start+distance*(j-1);
-                  var y = scomponi(d);
-                  return "translate("+x+", "+y+"), rotate("+ANGLES[i]+" "+startx+" "+starty+")"
-                });
+    var newLeaf = d3.selectAll("#leaf"+i).data(newData).transition().duration(500)
+                    .attr('x', function(d){return originXScale(d[parametri[i]])})
+                    .attr('y', function(d){return originYScale(d[parametri[i]])})
+                    .attr('width', function(d){ return dimScale(d[parametri[i]])})
+                    .attr('height', function(d){ return dimScale(d[parametri[i]])})
+                    .attr("transform", function(d, j) {
+                                var x = start+distance*(j-1);
+                                var y = scomponi(d);
+                                return "translate("+x+", "+y+"), rotate("+ANGLES[i]+" "+startx+" "+starty+")"
+                              })
+    if(i == ord){
+      newLeaf.attr('href', 'data/leaf2.png');
+    }
+    else {
+      newLeaf.attr('href', 'data/leaf.png');
+    }
   }
 
   d3.selectAll(".paese").data(newData).transition().duration(500)
     .attr("transform", function(d, j) {
                 var x = start+distance*(j-1);
-                return "translate("+x+", "+stemLenght/2+"), rotate(-90)"
+                return "translate("+x+"), rotate(-90)"
               })
     .text(function(d){return d.paese});
 
+  inserisciScritte(ord, newData)
 }
 
+function inserisciScritte(ord, newData){
+
+  var valori = svg.selectAll(".valore");
+  valori.remove();
+
+  for(i=0; i<NUM_CLOVERS; i++){
+    svg.append("text")
+          .attr("class", "valore")
+          .attr('x', startx/2-10)
+          .attr('y', stemLenght-70)
+          .attr("transform", "translate("+distance*(i)+")")
+          .text(function(){return newData[i][parametri[ord]]});
+  }
+
+  svg.append("text")
+      .attr("class", "valore")
+      .attr("x", "50%")
+      .attr("y","20%")
+      .text(parametri[ord]);
+}
 
 
 d3.json("data/dataset.json")
