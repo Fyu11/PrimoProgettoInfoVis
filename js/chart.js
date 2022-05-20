@@ -1,21 +1,21 @@
 var NUM_CLOVERS = 10;
 var ANGLES = [45, 135, 225, 315];
 var parametri = ["Health", "Jobs", "Environment", "Education"];
-var ord=0;
+
+//distanza tra ogni quadrifoglio
 var distance = 152;
-var start=75;
+
+//variabili per centrare gli elementi del singolo quadrifoglio
+var start=-77;
 var startx = 150;
 var starty = 80;
+
 var stemLenght = 600;
 
 //Assegna alla foglia una dimensione proporzionale al valore che rappresenta
 var dimScale = d3.scaleLinear();
     dimScale.domain([0, 10]);
     dimScale.range([0, 100]);
-
-var fattore = d3.scaleLinear();
-    fattore.domain([1, 10]);
-    fattore.range([1, 0]);
 
 //Centra la foglia nel punto (startx,starty) in base al valore che rappresenta
 var originXScale = d3.scaleLinear();
@@ -34,8 +34,6 @@ var totalPointScale = d3.scaleLinear();
 
 var svg = d3.select("svg");
 
-
-
 svg.append("text")
    .attr("class", "titolo")
    .attr("x", "50%")
@@ -43,8 +41,8 @@ svg.append("text")
    .text("Qualità della vita");
 
 
-
-function scomponi(d){
+//funzione che ritorna un valore proporzionale alla somma dei 4 valori associati alle foglie
+function scaleValuesSum(d){
   var singleCase = Object.values(d)
   var arrayTemp = Object.values(singleCase)
   arrayTemp.shift();
@@ -52,20 +50,20 @@ function scomponi(d){
   return totalPointScale(totalPoint);
 }
 
+//funzione per calcolare la distanza da un quadrifoglio al primo quadrigolio
+function xDistance (d, data){
+  return start+distance*(data.indexOf(d));
+}
 
 
 function drawclovers(data){
 
-  var leafs = svg.selectAll(".leaf").data(data);
-  leafs.exit().remove();
-  var stems = svg.selectAll(".stem").data(data);
-  stems.exit().remove();
-  var paesi = svg.selectAll(".paese").data(data);
-  paesi.exit().remove();
+  var clovers = svg.selectAll(".leaf, .stem, .paese").data(data);
+  clovers.exit().remove();
 
   //disegno foglie
   for(i=0; i<4; i++){
-    leafs.enter().append("image")
+    clovers.enter().append("image")
         .attr("class", "leaf")
         .attr("id", "leaf"+i)
         .attr('x', function(d){return originXScale(d[parametri[i]])})
@@ -73,37 +71,37 @@ function drawclovers(data){
         .attr('width', function(d){ return dimScale(d[parametri[i]])})
         .attr('height', function(d){ return dimScale(d[parametri[i]])})
         .attr('href', 'data/leaf.png')
-        .attr("transform", function(d, j) {
-                    var x = start+distance*(j-1);
-                    var y = scomponi(d);
+        .attr("transform", function(d) {
+                    var x = xDistance(d, data);
+                    var y = scaleValuesSum(d);
                     return "translate("+x+", "+y+"), rotate("+ANGLES[i]+" "+startx+" "+starty+")"
                   })
         .on("click", function(d){
-                    var leafid = d.path[0].id;
+                    var leafid = d3.select(this).attr("id");
                     var ord = parseInt(leafid.substr(leafid.length - 1));
                     change(ord, data);})
   }
 
   //disegno stelo
-  stems.enter().append("line")
+  clovers.enter().append("line")
        .attr("class", "stem")
        .attr('x1', startx)
        .attr('y1', starty)
        .attr('x2', startx)
-       .attr('y2', function(d){return starty+stemLenght-scomponi(d)})
-       .attr("transform", function(d, j) {
-                   var x = start+distance*(j-1);
-                   var y = scomponi(d);
+       .attr('y2', function(d){return starty+stemLenght-scaleValuesSum(d)})
+       .attr("transform", function(d) {
+                   var x = xDistance(d, data);
+                   var y = scaleValuesSum(d);
                    return "translate("+x+", "+y+")"
                  });
 
    //scritta paesi
-   paesi.enter().append("text")
+   clovers.enter().append("text")
        .attr("class", "paese")
        .attr("x", -(stemLenght)-80)
        .attr("y", startx)
-       .attr("transform", function(d, j) {
-                   var x = start+distance*(j-1);
+       .attr("transform", function(d) {
+                   var x = xDistance(d, data);
                    return "translate("+x+"), rotate(-90)"
                  })
        .text(function(d){return d.paese});
@@ -114,25 +112,18 @@ function drawclovers(data){
 function change(ord, data){
 
   var newData = data.sort(function(a, b){
-            return Object.values(a)[ord+1] - Object.values(b)[ord+1]});
+                return Object.values(a)[ord+1] - Object.values(b)[ord+1]});
 
-  d3.selectAll(".stem").data(newData).transition().duration(500)
-    .attr('y2', function(d){return starty+stemLenght-scomponi(d)})
-    .attr("transform", function(d, j) {
-                var x = start+distance*(j-1);
-                var y = scomponi(d);
-                return "translate("+x+", "+y+")"
-              });
-
+  //modifica foglie
   for(let i in parametri){
-    var newLeaf = d3.selectAll("#leaf"+i).data(newData).transition().duration(500)
+    var newLeaf = d3.selectAll("#leaf"+i).transition().duration(1000)
                     .attr('x', function(d){return originXScale(d[parametri[i]])})
                     .attr('y', function(d){return originYScale(d[parametri[i]])})
                     .attr('width', function(d){ return dimScale(d[parametri[i]])})
                     .attr('height', function(d){ return dimScale(d[parametri[i]])})
-                    .attr("transform", function(d, j) {
-                                var x = start+distance*(j-1);
-                                var y = scomponi(d);
+                    .attr("transform", function(d) {
+                                var x = xDistance(d, newData);
+                                var y = scaleValuesSum(d);
                                 return "translate("+x+", "+y+"), rotate("+ANGLES[i]+" "+startx+" "+starty+")"
                               })
     if(i == ord){
@@ -143,9 +134,19 @@ function change(ord, data){
     }
   }
 
-  d3.selectAll(".paese").data(newData).transition().duration(500)
-    .attr("transform", function(d, j) {
-                var x = start+distance*(j-1);
+  //modifica stelo
+  d3.selectAll(".stem").transition().duration(1000)
+    .attr('y2', function(d){return starty+stemLenght-scaleValuesSum(d)})
+    .attr("transform", function(d) {
+                var x = xDistance(d, newData);
+                var y = scaleValuesSum(d);
+                return "translate("+x+", "+y+")"
+              });
+
+  //modifica scritta paese
+  d3.selectAll(".paese").transition().duration(1000)
+    .attr("transform", function(d) {
+                var x = xDistance(d, newData);
                 return "translate("+x+"), rotate(-90)"
               })
     .text(function(d){return d.paese});
@@ -153,6 +154,7 @@ function change(ord, data){
   inserisciScritte(ord, newData)
 }
 
+//funzione per inserire le scritte del parametro e i relativi valori
 function inserisciScritte(ord, newData){
 
   var valori = svg.selectAll(".valore");
@@ -161,8 +163,10 @@ function inserisciScritte(ord, newData){
   for(i=0; i<NUM_CLOVERS; i++){
     svg.append("text")
           .attr("class", "valore")
-          .attr('x', startx/2-10)
+          .transition()
+          .duration(1000)
           .attr('y', stemLenght-70)
+          .attr('x', startx/2-10)
           .attr("transform", "translate("+distance*(i)+")")
           .text(function(){return newData[i][parametri[ord]]});
   }
