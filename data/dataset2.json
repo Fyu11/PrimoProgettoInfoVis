@@ -1,0 +1,72 @@
+[
+    {
+      "paese": "Australia",
+      "Health": 49,
+      "Jobs": 26,
+      "Environment": 18,
+      "Education": 37
+    },
+    {
+      "paese": "Brasile",
+      "Health": 36,
+      "Jobs": 44,
+      "Environment": 50,
+      "Education": 33
+    },
+    {
+      "paese": "Canada",
+      "Health": 39,
+      "Jobs": 45,
+      "Environment": 28,
+      "Education": 37
+    },
+    {
+     "paese": "Cile",
+      "Health": 22,
+      "Jobs": 16,
+      "Environment": 31,
+      "Education": 25
+    },
+    {
+      "paese": "Finlandia",
+      "Health": 37,
+      "Jobs": 48,
+      "Environment": 39,
+      "Education": 48
+    },
+    {
+      "paese": "Grecia",
+      "Health": 28,
+      "Jobs": 33,
+      "Environment": 24,
+      "Education": 37
+    },
+    {
+      "paese": "Islanda",
+      "Health": 48,
+      "Jobs": 49,
+      "Environment": 39,
+      "Education": 37
+    },
+    {
+      "paese": "Italia",
+      "Health": 28,
+      "Jobs": 46,
+      "Environment": 35,
+      "Education": 15
+    },
+    {
+      "paese": "Messico",
+      "Health": 25,
+      "Jobs": 46,
+      "Environment": 24,
+      "Education": 32
+    },
+    {
+      "paese": "Slovenia",
+      "Health": 27,
+      "Jobs": 37,
+      "Environment": 26,
+      "Education": 27
+    }
+]
