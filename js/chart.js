@@ -3,10 +3,15 @@ var ANGLES = [45, 135, 225, 315];
 var parametri = ["Health", "Jobs", "Environment", "Education"];
 
 //distanza tra ogni quadrifoglio
-var distance = 152;
+var distance = 150;
+
+//distanza del 1 quadrifoglio dal margine
+var start=-70;
+
+//Dimensione max foglia
+var dimMax = 80;
 
 //variabili per centrare gli elementi del singolo quadrifoglio
-var start=-77;
 var startx = 150;
 var starty = 80;
 
@@ -14,25 +19,21 @@ var stemLenght = 600;
 
 //Assegna alla foglia una dimensione proporzionale al valore che rappresenta
 var dimScale = d3.scaleLinear();
-    dimScale.domain([0, 10]);
-    dimScale.range([0, 100]);
 
 //Centra la foglia nel punto (startx,starty) in base al valore che rappresenta
 var originXScale = d3.scaleLinear();
-    originXScale.domain([1, 10]);
-    originXScale.range([145, 99]);
+    originXScale.range([150, 110]);
 
 //Centra la foglia nel punto (startx,starty) in base al valore che rappresenta
 var originYScale = d3.scaleLinear();
-    originYScale.domain([1, 10]);
-    originYScale.range([70, -16]);
+    originYScale.range([80, 3]);
 
 //Assegna un'altezza al quadrifoglio proporzionale alla somma delle sue 4 variabili
 var totalPointScale = d3.scaleLinear();
-    totalPointScale.domain([0, 40]);
     totalPointScale.range([500, 100]);
 
 var svg = d3.select("svg");
+
 
 svg.append("text")
    .attr("class", "titolo")
@@ -40,6 +41,31 @@ svg.append("text")
    .attr("y","10%")
    .text("Qualità della vita");
 
+
+function setDomainScales(data){
+  var max = Object.values(data[0])[1];
+  var min = Object.values(data[0])[1];
+
+  for(i in parametri){
+    var myArray = data.map(function(d){return d[parametri[i]]})
+    if(d3.max(myArray) > max)
+        max = d3.max(myArray);
+    if(d3.min(myArray) < min)
+        min = d3.min(myArray);
+  }
+
+  if (min == 0){
+    dimScale.range([0, dimMax]);
+  }
+  else{
+    dimScale.range([1, dimMax]);
+  }
+
+  dimScale.domain([min, max]);
+  originXScale.domain([min, max]);
+  originYScale.domain([min, max]);
+  totalPointScale.domain([min, max*4]);
+}
 
 //funzione che ritorna un valore proporzionale alla somma dei 4 valori associati alle foglie
 function scaleValuesSum(d){
@@ -178,8 +204,8 @@ function inserisciScritte(ord, newData){
       .text(parametri[ord]);
 }
 
-
 d3.json("data/dataset.json")
   .then(function (data){
+            setDomainScales(data)
             drawclovers(data);
          });
