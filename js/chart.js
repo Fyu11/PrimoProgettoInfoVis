@@ -22,11 +22,11 @@ var dimScale = d3.scaleLinear();
 
 //Centra la foglia nel punto (startx,starty) in base al valore che rappresenta
 var originXScale = d3.scaleLinear();
-    originXScale.range([150, 110]);
+    originXScale.range([145, 110]);
 
 //Centra la foglia nel punto (startx,starty) in base al valore che rappresenta
 var originYScale = d3.scaleLinear();
-    originYScale.range([80, 3]);
+    originYScale.range([70, 4]);
 
 //Assegna un'altezza al quadrifoglio proporzionale alla somma delle sue 4 variabili
 var totalPointScale = d3.scaleLinear();
@@ -54,13 +54,7 @@ function setDomainScales(data){
         min = d3.min(myArray);
   }
 
-  if (min == 0){
-    dimScale.range([0, dimMax]);
-  }
-  else{
-    dimScale.range([1, dimMax]);
-  }
-
+  dimScale.range([10, dimMax]);
   dimScale.domain([min, max]);
   originXScale.domain([min, max]);
   originYScale.domain([min, max]);
@@ -94,8 +88,12 @@ function drawclovers(data){
         .attr("id", "leaf"+i)
         .attr('x', function(d){return originXScale(d[parametri[i]])})
         .attr('y', function(d){return originYScale(d[parametri[i]])})
-        .attr('width', function(d){ return dimScale(d[parametri[i]])})
-        .attr('height', function(d){ return dimScale(d[parametri[i]])})
+        .attr('width', function(d){ if (d[parametri[i]]==0)
+                                      return 0
+                                    else return dimScale(d[parametri[i]])})
+        .attr('height', function(d){ if (d[parametri[i]]==0)
+                                      return 0
+                                    else return dimScale(d[parametri[i]])})
         .attr('href', 'data/leaf.png')
         .attr("transform", function(d) {
                     var x = xDistance(d, data);
@@ -145,8 +143,12 @@ function change(ord, data){
     var newLeaf = d3.selectAll("#leaf"+i).transition().duration(1000)
                     .attr('x', function(d){return originXScale(d[parametri[i]])})
                     .attr('y', function(d){return originYScale(d[parametri[i]])})
-                    .attr('width', function(d){ return dimScale(d[parametri[i]])})
-                    .attr('height', function(d){ return dimScale(d[parametri[i]])})
+                    .attr('width', function(d){ if (d[parametri[i]]==0)
+                                                  return 0
+                                                else return dimScale(d[parametri[i]])})
+                    .attr('height', function(d){ if (d[parametri[i]]==0)
+                                                  return 0
+                                                else return dimScale(d[parametri[i]])})
                     .attr("transform", function(d) {
                                 var x = xDistance(d, newData);
                                 var y = scaleValuesSum(d);
